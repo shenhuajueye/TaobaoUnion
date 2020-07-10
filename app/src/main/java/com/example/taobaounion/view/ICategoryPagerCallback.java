@@ -1,50 +1,29 @@
 package com.example.taobaounion.view;
 
+import com.example.taobaounion.base.IBaseCallback;
 import com.example.taobaounion.model.domain.HomePagerContent;
 
 import java.util.List;
 
-public interface ICategoryPagerCallback {
+public interface ICategoryPagerCallback extends IBaseCallback {
 
     /**
      * 数据加载回来
-     *
      * @param contents
      */
-    void onContentLoader(List<HomePagerContent> contents);
+    void onContentLoader(List<HomePagerContent.DataBean> contents);
 
-    /**
-     * 加载中
-     *
-     * @param categoryId
-     */
-    void onLoading(int categoryId);
-
-    /**
-     * 网络错误
-     *
-     * @param category
-     */
-    void onError(int category);
-
-    /**
-     * 数据为空
-     *
-     * @param category
-     */
-    void onEmpty(int category);
+    int getCategoryId();
 
     /**
      * 加载更多网络错误
-     * @param categoryId
      */
-    void onLoaderMoreError(int categoryId);
+    void onLoaderMoreError();
 
     /**
      * 加载更多没有更多内容
-     * @param categoryId
      */
-    void onLoaderMoreEmpty(int categoryId);
+    void onLoaderMoreEmpty();
 
     /**
      * 加载到更多内容
