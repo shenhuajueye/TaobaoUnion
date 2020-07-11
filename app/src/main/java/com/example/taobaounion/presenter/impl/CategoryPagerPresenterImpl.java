@@ -130,6 +130,7 @@ public class CategoryPagerPresenterImpl implements ICategoryPagerPresenter {
                 LogUtils.d(CategoryPagerPresenterImpl.this, "result code -->" + code);
                 if (code == HttpURLConnection.HTTP_OK) {
                     HomePagerContent result = response.body();
+                    LogUtils.d(CategoryPagerPresenterImpl.this,"result -->" + result.toString());
                     handleLoaderResult(result, categoryId);
                 } else {
                     //请求失败

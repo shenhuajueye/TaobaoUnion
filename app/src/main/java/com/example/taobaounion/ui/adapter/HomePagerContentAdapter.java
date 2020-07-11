@@ -25,15 +25,18 @@ import butterknife.ButterKnife;
 
 public class HomePagerContentAdapter extends RecyclerView.Adapter<HomePagerContentAdapter.InnerHolder> {
     private List<HomePagerContent.DataBean> data = new ArrayList<>();
+
     @NonNull
     @Override
     public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //LogUtils.d(this,"onCreateViewHolder...");
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_pager_content, parent, false);
         return new InnerHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
+        //LogUtils.d(this,"onBindViewHolder..." + position);
         HomePagerContent.DataBean dataBean = data.get(position);
         //设置数据
         holder.setData(dataBean);
@@ -48,6 +51,14 @@ public class HomePagerContentAdapter extends RecyclerView.Adapter<HomePagerConte
         data.clear();
         data.addAll(contents);
         notifyDataSetChanged();
+    }
+
+    public void addData(List<HomePagerContent.DataBean> contents) {
+        //添加之前拿到原来数据的size
+        int olderSize = data.size();
+        data.addAll(contents);
+        //更新UI
+        notifyItemRangeChanged(olderSize, contents.size());
     }
 
     public class InnerHolder extends RecyclerView.ViewHolder {
@@ -72,25 +83,31 @@ public class HomePagerContentAdapter extends RecyclerView.Adapter<HomePagerConte
 
         public InnerHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         public void setData(HomePagerContent.DataBean dataBean) {
             Context context = itemView.getContext();
             title.setText(dataBean.getTitle());
+            ViewGroup.LayoutParams layoutParams = cover.getLayoutParams();
+            int width = layoutParams.width;
+            int height = layoutParams.height;
+            int coverSize = (width > height ? width : height) / 2;
             //LogUtils.d(this,"url -->" + dataBean.getPict_url());
-            Glide.with(context).load(UrlUtils.getCoverPath(dataBean.getPict_url())).into(cover);
+            String coverPath = UrlUtils.getCoverPath(dataBean.getPict_url(), coverSize);
+            //LogUtils.d(this,coverPath);
+            Glide.with(context).load(coverPath).into(cover);
             String originalPrice = dataBean.getZk_final_price();
             long couponAmount = dataBean.getCoupon_amount();
             long sellCount = dataBean.getVolume();
             //LogUtils.d(this,"original price -->" + originalPrice );
-            float finalPrice =  Float.parseFloat(originalPrice) - couponAmount;
+            float finalPrice = Float.parseFloat(originalPrice) - couponAmount;
             //LogUtils.d(this,"final price -->" + finalPrice );
-            finalPriceTv.setText(String.format("%.2f",finalPrice));
-            offPriseTv.setText(String.format(context.getString(R.string.text_goods_off_price),couponAmount));
+            finalPriceTv.setText(String.format("%.2f", finalPrice));
+            offPriseTv.setText(String.format(context.getString(R.string.text_goods_off_price), couponAmount));
             originalPriceTv.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            originalPriceTv.setText(String.format(context.getString(R.string.text_goods_original_price),originalPrice));
-            sellCountTv.setText(String.format(context.getString(R.string.text_goods_sell_count),sellCount));
+            originalPriceTv.setText(String.format(context.getString(R.string.text_goods_original_price), originalPrice));
+            sellCountTv.setText(String.format(context.getString(R.string.text_goods_sell_count), sellCount));
         }
     }
 }
