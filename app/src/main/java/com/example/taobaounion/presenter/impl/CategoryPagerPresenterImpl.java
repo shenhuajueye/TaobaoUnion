@@ -58,7 +58,7 @@ public class CategoryPagerPresenterImpl implements ICategoryPagerPresenter {
             @Override
             public void onResponse(Call<HomePagerContent> call, Response<HomePagerContent> response) {
                 int code = response.code();
-                LogUtils.d(CategoryPagerPresenterImpl.this, "code -->" + code);
+                //LogUtils.d(CategoryPagerPresenterImpl.this, "code -->" + code);
                 if (code == HttpURLConnection.HTTP_OK) {
                     HomePagerContent pagerContent = response.body();
                     //LogUtils.d(CategoryPagerPresenterImpl.this, "pagerContent -->" + pagerContent);
@@ -79,7 +79,7 @@ public class CategoryPagerPresenterImpl implements ICategoryPagerPresenter {
 
     private Call<HomePagerContent> createTask(int categoryId, Integer targetPage) {
         String homePagerUrl = UrlUtils.createHomePagerUrl(categoryId, targetPage);
-        LogUtils.d(this, "home pager url -->" + homePagerUrl);
+        //LogUtils.d(this, "home pager url -->" + homePagerUrl);
         Retrofit retrofit = RetrofitManager.getInstance().getRetrofit();
         Api api = retrofit.create(Api.class);
         return api.getHomePagerContent(homePagerUrl);
@@ -130,7 +130,7 @@ public class CategoryPagerPresenterImpl implements ICategoryPagerPresenter {
                 LogUtils.d(CategoryPagerPresenterImpl.this, "result code -->" + code);
                 if (code == HttpURLConnection.HTTP_OK) {
                     HomePagerContent result = response.body();
-                    LogUtils.d(CategoryPagerPresenterImpl.this,"result -->" + result.toString());
+                    //LogUtils.d(CategoryPagerPresenterImpl.this,"result -->" + result.toString());
                     handleLoaderResult(result, categoryId);
                 } else {
                     //请求失败

@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,11 +22,15 @@ import com.example.taobaounion.presenter.ICategoryPagerPresenter;
 import com.example.taobaounion.presenter.impl.CategoryPagerPresenterImpl;
 import com.example.taobaounion.ui.adapter.HomePagerContentAdapter;
 import com.example.taobaounion.ui.adapter.LooperPagerAdapter;
+import com.example.taobaounion.ui.custom.AutoLooperViewPager;
 import com.example.taobaounion.utils.Constants;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.SizeUtils;
 import com.example.taobaounion.utils.ToastUtils;
 import com.example.taobaounion.view.ICategoryPagerCallback;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.views.TbNestedScrollView;
 
 import java.util.List;
 
@@ -53,7 +56,7 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
     public RecyclerView contentList;
 
     @BindView(R.id.looper_pager)
-    public ViewPager looperPager;
+    public AutoLooperViewPager looperPager;
 
     @BindView(R.id.home_pager_title)
     public TextView currentCategoryTitleTv;
@@ -65,10 +68,30 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
     @BindView(R.id.home_pager_parent)
     public LinearLayout homePagerParent;
 
+    @BindView(R.id.hme_pager_header_container)
+    public LinearLayout homePagerHeaderContainer;
 
-//    @BindView(R.id.home_pager_refresh)
-//    public TwinklingRefreshLayout twinklingRefreshLayout;
+    @BindView(R.id.home_pager_nested_scroll)
+    public TbNestedScrollView homePagerNestedScroll;
 
+
+    @BindView(R.id.home_pager_refresh)
+    public TwinklingRefreshLayout twinklingRefreshLayout;
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //可见的时候去调用开始轮播
+        looperPager.startLooper();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //不可见的时候暂停轮播
+        looperPager.stopLooper();
+    }
 
     @Override
     protected int getRootViewResId() {
@@ -80,11 +103,17 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
         homePagerParent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                if (homePagerHeaderContainer == null) {
+                    return;
+                }
+                int headerHeight = homePagerHeaderContainer.getMeasuredHeight();
+                //LogUtils.d(HomePagerFragment.this, "headerHeight -->" + headerHeight);
+                homePagerNestedScroll.setHeaderHeight(headerHeight);
                 int measuredHeight = homePagerParent.getMeasuredHeight();
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) contentList.getLayoutParams();
                 layoutParams.height = measuredHeight;
                 contentList.setLayoutParams(layoutParams);
-                if(measuredHeight!=0){
+                if (measuredHeight != 0) {
                     homePagerParent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
                 //LogUtils.d(HomePagerFragment.this,"homePagerParent -->" + measuredHeight);
@@ -112,16 +141,16 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
             }
         });
 
-//        twinklingRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
-//            @Override
-//            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
-//                LogUtils.d(HomePagerFragment.this, "触发了loader more...");
-//                //TODO:去加载更多内容
-//                if (categoryPagerPresenter != null) {
-//                    categoryPagerPresenter.loaderMore(materialId);
-//                }
-//            }
-//        });
+        twinklingRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+                //LogUtils.d(HomePagerFragment.this, "触发了loader more...");
+                //TODO:去加载更多内容
+                if (categoryPagerPresenter != null) {
+                    categoryPagerPresenter.loaderMore(materialId);
+                }
+            }
+        });
     }
 
     /**
@@ -132,7 +161,7 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
     private void updateLooperIndicator(int targetPosition) {
         for (int i = 0; i < looperPointContainer.getChildCount(); i++) {
             View point = looperPointContainer.getChildAt(i);
-            LogUtils.d(this, "targetPosition -->" + targetPosition);
+            //LogUtils.d(this, "targetPosition -->" + targetPosition);
             if (i == targetPosition) {
                 point.setBackgroundResource(R.drawable.shape_indicator_point_selected);
             } else {
@@ -162,8 +191,8 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
         looperPager.setAdapter(looperPagerAdapter);
 
         //设置refresh相干属性
-//        twinklingRefreshLayout.setEnableRefresh(false);
-//        twinklingRefreshLayout.setEnableLoadmore(true);
+        twinklingRefreshLayout.setEnableRefresh(false);
+        twinklingRefreshLayout.setEnableLoadmore(true);
 
     }
 
@@ -179,8 +208,8 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
         String title = arguments.getString(Constants.KEY_HOME_PAGER_TITLE);
         materialId = arguments.getInt(Constants.KEY_HOME_PAGER_MATERIAL_ID);
         //TODO:加载数据
-        LogUtils.d(this, "title-->" + title);
-        LogUtils.d(this, "materialId-->" + materialId);
+        //LogUtils.d(this, "title-->" + title);
+        //LogUtils.d(this, "materialId-->" + materialId);
         if (categoryPagerPresenter != null) {
             categoryPagerPresenter.getContentByCategoryId(materialId);
         }
@@ -222,33 +251,33 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
     @Override
     public void onLoaderMoreError() {
         ToastUtils.showToast("网络异常，请稍后重试。。。");
-//        if (twinklingRefreshLayout != null) {
-//            twinklingRefreshLayout.finishLoadmore();
-//        }
+        if (twinklingRefreshLayout != null) {
+            twinklingRefreshLayout.finishLoadmore();
+        }
     }
 
     @Override
     public void onLoaderMoreEmpty() {
         ToastUtils.showToast("没有更多商品了");
-//        if (twinklingRefreshLayout != null) {
-//            twinklingRefreshLayout.finishLoadmore();
-//        }
+        if (twinklingRefreshLayout != null) {
+            twinklingRefreshLayout.finishLoadmore();
+        }
     }
 
     @Override
     public void onLoaderMoreLoader(List<HomePagerContent.DataBean> contents) {
         //添加到适配器数据的底部
         contentAdapter.addData(contents);
-//        if (twinklingRefreshLayout != null) {
-//            twinklingRefreshLayout.finishLoadmore();
-//        }
+        if (twinklingRefreshLayout != null) {
+            twinklingRefreshLayout.finishLoadmore();
+        }
         ToastUtils.showToast("加载了" + contents.size() + "件商品");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onLooperListLoader(List<HomePagerContent.DataBean> contents) {
-        LogUtils.d(this, "looper size -->" + contents.size());
+        //LogUtils.d(this, "looper size -->" + contents.size());
         looperPagerAdapter.setData(contents);
         //中间点%数据的size不一定为0，所以显示的就不是第一个
         //处理一下

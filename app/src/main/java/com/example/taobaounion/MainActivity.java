@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         searchFragment = new SearchFragment();
         supportFragmentManager = getSupportFragmentManager();
         switchFragment(homeFragment);
+
     }
 
     private void initListener() {
@@ -85,9 +86,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 上一次显示的Fragment
+     */
+    private BaseFragment lastOneFragment = null;
+
     private void switchFragment(BaseFragment targetFragment) {
+        //修改成add和hide的方式来控制Fragment的切换
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_page_container,targetFragment);
+        if (!targetFragment.isAdded()) {
+            fragmentTransaction.add(R.id.main_page_container, targetFragment);
+        } else {
+            fragmentTransaction.show(targetFragment);
+        }
+        if (lastOneFragment != null) {
+            LogUtils.d(this,"已隐藏" + lastOneFragment);
+            fragmentTransaction.hide(lastOneFragment);
+        }
+        lastOneFragment = targetFragment;
         fragmentTransaction.commit();
     }
 
@@ -95,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         HomeFragment homeFragment = new HomeFragment();
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.main_page_container, homeFragment);
-        fragmentTransaction.commit();
+//        fragmentTransaction.add(R.id.main_page_container, homeFragment);
+//        fragmentTransaction.commit();
     }
 }
