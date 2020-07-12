@@ -1,16 +1,13 @@
 package com.example.taobaounion;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-
+import com.example.taobaounion.base.BaseActivity;
 import com.example.taobaounion.base.BaseFragment;
 import com.example.taobaounion.ui.fragment.HomeFragment;
 import com.example.taobaounion.ui.fragment.RedPacketFragment;
@@ -20,10 +17,9 @@ import com.example.taobaounion.utils.LogUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
     @BindView(R.id.main_navigation_bar)
@@ -36,15 +32,22 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager supportFragmentManager;
     private Unbinder bind;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        bind = ButterKnife.bind(this);
-        initView();
+    protected int getLayoutResId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initView() {
         initFragment();
+    }
+    @Override
+    protected void initEvent() {
         initListener();
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -107,11 +110,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void initView() {
-        HomeFragment homeFragment = new HomeFragment();
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.main_page_container, homeFragment);
-//        fragmentTransaction.commit();
-    }
+//    private void initView() {
+//        HomeFragment homeFragment = new HomeFragment();
+//        FragmentManager supportFragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+////        fragmentTransaction.add(R.id.main_page_container, homeFragment);
+////        fragmentTransaction.commit();
+//    }
 }

@@ -9,9 +9,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.taobaounion.R;
 import com.example.taobaounion.base.BaseFragment;
 import com.example.taobaounion.model.domain.Categories;
+import com.example.taobaounion.presenter.IHomePresenter;
 import com.example.taobaounion.presenter.impl.HomePresenterImpl;
 import com.example.taobaounion.ui.adapter.HomePagerAdapter;
 import com.example.taobaounion.utils.LogUtils;
+import com.example.taobaounion.utils.PresenterManager;
 import com.example.taobaounion.view.IHomeCallBack;
 import com.google.android.material.tabs.TabLayout;
 
@@ -22,7 +24,7 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
     public TabLayout tabLayout;
     @BindView(R.id.home_pager)
     public ViewPager homePager;
-    private HomePresenterImpl homePresenter;
+    private IHomePresenter homePresenter;
     private HomePagerAdapter homePagerAdapter;
 
     @Override
@@ -42,7 +44,7 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
     @Override
     protected void initPresenter() {
         //创建Presenter
-        homePresenter = new HomePresenterImpl();
+        homePresenter = PresenterManager.getInstance().getHomePresenter();
         homePresenter.registerViewCallback(this);
     }
 
