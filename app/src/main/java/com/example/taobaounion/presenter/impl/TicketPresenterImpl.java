@@ -4,11 +4,11 @@ import com.example.taobaounion.base.IBaseCallback;
 import com.example.taobaounion.model.Api;
 import com.example.taobaounion.model.domain.TicketParams;
 import com.example.taobaounion.model.domain.TicketResult;
+import com.example.taobaounion.presenter.ITicketPagerCallback;
 import com.example.taobaounion.presenter.ITicketPresenter;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.RetrofitManager;
 import com.example.taobaounion.utils.UrlUtils;
-import com.lcodecore.tkrefreshlayout.utils.LogUtil;
 
 import java.net.HttpURLConnection;
 
@@ -18,8 +18,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class TicketPresenterImpl implements ITicketPresenter {
+    private ITicketPagerCallback mViewCallback = null;
+    private String mCover = null;
+    private TicketResult ticketResult;
+
+    enum LoadState{
+        LOADING,SUCCESS,ERROR,NONE
+    }
+
+    private LoadState currentState = LoadState.NONE;
+
     @Override
     public void getTicket(String title, String url, String cover) {
+        this.onTicketLoading();
+        mCover = cover;
         //去获取淘口令
         LogUtils.d(TicketPresenterImpl.this,"title -->" + title);
         LogUtils.d(TicketPresenterImpl.this,"url -->" + url);
@@ -36,28 +48,70 @@ public class TicketPresenterImpl implements ITicketPresenter {
                 LogUtils.d(TicketPresenterImpl.this,"code result -->" + code);
                 if(code == HttpURLConnection.HTTP_OK){
                     //请求成功
-                    TicketResult ticketResult = response.body();
+                    ticketResult = response.body();
                     LogUtils.d(TicketPresenterImpl.this,"result -->" + ticketResult);
+                    //通知UI更新
+
+                    onTicketLoaderSuccess();
                 }else{
-                    //请求失败
+                    //
+                    onLoaderTicketError();
+
                 }
             }
 
             @Override
             public void onFailure(Call<TicketResult> call, Throwable t) {
+                //失败
+                onLoaderTicketError();
 
             }
         });
 
     }
 
-    @Override
-    public void registerViewCallback(IBaseCallback callBack) {
+    private void onTicketLoaderSuccess() {
+        if (mViewCallback != null) {
+            mViewCallback.onTicketLoader(mCover, ticketResult);
+        }else{
+            currentState = LoadState.SUCCESS;
+        }
+    }
 
+    private void onLoaderTicketError() {
+        if (mViewCallback != null) {
+            mViewCallback.onError();
+        }else{
+            currentState = LoadState.ERROR;
+        }
     }
 
     @Override
-    public void unregisterViewCallback(IBaseCallback callBack) {
+    public void registerViewCallback(ITicketPagerCallback callBack) {
+        this.mViewCallback = callBack;
+        if(currentState!=LoadState.NONE){
+            //说明状态已经改变
+            //更新UI
+            if(currentState==LoadState.SUCCESS){
+                onTicketLoaderSuccess();
+            }else if(currentState ==LoadState.ERROR){
+                onLoaderTicketError();
+            }else if(currentState==LoadState.LOADING){
+                onTicketLoading();
+            }
+        }
+    }
 
+    private void onTicketLoading() {
+        if(mViewCallback!=null){
+            mViewCallback.onLoading();
+        }else{
+            currentState = LoadState.LOADING;
+        }
+    }
+
+    @Override
+    public void unregisterViewCallback(ITicketPagerCallback callBack) {
+        mViewCallback = null;
     }
 }

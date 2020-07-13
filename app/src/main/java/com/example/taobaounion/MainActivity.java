@@ -42,6 +42,12 @@ public class MainActivity extends BaseActivity {
     protected void initView() {
         initFragment();
     }
+
+    @Override
+    protected void initPresenter() {
+
+    }
+
     @Override
     protected void initEvent() {
         initListener();

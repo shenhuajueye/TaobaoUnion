@@ -18,6 +18,7 @@ public class HomePagerAdapter extends  FragmentPagerAdapter {
     private List<Categories.DataBean> categoryList= new ArrayList<>();
 
     public HomePagerAdapter(@NonNull FragmentManager fm) {
+
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
