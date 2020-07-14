@@ -1,6 +1,5 @@
 package com.example.taobaounion;
 
-import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.taobaounion.base.BaseActivity;
 import com.example.taobaounion.base.BaseFragment;
 import com.example.taobaounion.ui.fragment.HomeFragment;
-import com.example.taobaounion.ui.fragment.RedPacketFragment;
+import com.example.taobaounion.ui.fragment.OnSellFragment;
 import com.example.taobaounion.ui.fragment.SearchFragment;
 import com.example.taobaounion.ui.fragment.SelectedFragment;
 import com.example.taobaounion.utils.LogUtils;
@@ -26,7 +25,7 @@ public class MainActivity extends BaseActivity {
     public BottomNavigationView bottomNavigationView;
     private HomeFragment homeFragment;
     private SelectedFragment selectedFragment;
-    private RedPacketFragment redPacketFragment;
+    private OnSellFragment redPacketFragment;
     private SearchFragment searchFragment1;
     private SearchFragment searchFragment;
     private FragmentManager supportFragmentManager;
@@ -66,7 +65,7 @@ public class MainActivity extends BaseActivity {
     private void initFragment() {
         homeFragment = new HomeFragment();
         selectedFragment = new SelectedFragment();
-        redPacketFragment = new RedPacketFragment();
+        redPacketFragment = new OnSellFragment();
         searchFragment = new SearchFragment();
         supportFragmentManager = getSupportFragmentManager();
         switchFragment(homeFragment);
