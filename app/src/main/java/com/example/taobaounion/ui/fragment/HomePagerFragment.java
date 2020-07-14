@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
@@ -21,8 +22,6 @@ import com.example.taobaounion.model.domain.Categories;
 import com.example.taobaounion.model.domain.HomePagerContent;
 import com.example.taobaounion.presenter.ICategoryPagerPresenter;
 import com.example.taobaounion.presenter.ITicketPresenter;
-import com.example.taobaounion.presenter.impl.CategoryPagerPresenterImpl;
-import com.example.taobaounion.presenter.impl.TicketPresenterImpl;
 import com.example.taobaounion.ui.activity.TicketActivity;
 import com.example.taobaounion.ui.adapter.HomePagerContentAdapter;
 import com.example.taobaounion.ui.adapter.LooperPagerAdapter;
@@ -328,7 +327,12 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
     private void handleItemClick(HomePagerContent.DataBean item) {
         //处理数据
         String title = item.getTitle();
-        String url = item.getClick_url();
+        //领券页面
+        String url = item.getCoupon_click_url();
+        if(TextUtils.isEmpty(url)){
+            //详情页地址
+            url = item.getClick_url();
+        }
         String cover = item.getPict_url();
         //拿到TicketPresenter去加载数据
         ITicketPresenter ticketPresenter = PresenterManager.getInstance().getTicketPresenter();
