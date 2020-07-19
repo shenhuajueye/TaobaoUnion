@@ -37,8 +37,8 @@ public class OnSellPagePresenterImpl implements IOnSellPagePresenter {
             mOnSellPageCallback.onLoading();
         }
         //获取特惠内容
-
         String targetUrl = UrlUtils.getOnSellPageUrl(mCurrentPage);
+        LogUtils.d(OnSellPagePresenterImpl.this,"targetUrl is -- >" +  targetUrl);
         Call<OnSellContent> task = api.getOnSellPageContent(targetUrl);
         task.enqueue(new Callback<OnSellContent>() {
             @Override
@@ -115,13 +115,14 @@ public class OnSellPagePresenterImpl implements IOnSellPagePresenter {
         mCurrentPage++;
         //去加载更多内容
         String targetUrl = UrlUtils.getOnSellPageUrl(mCurrentPage);
+
         Call<OnSellContent> task = api.getOnSellPageContent(targetUrl);
         task.enqueue(new Callback<OnSellContent>() {
             @Override
             public void onResponse(Call<OnSellContent> call, Response<OnSellContent> response) {
                 isLoading = false;
                 int code = response.code();
-                LogUtils.d(OnSellPagePresenterImpl.this, "result code is -->" + code);
+//                LogUtils.d(OnSellPagePresenterImpl.this, "result code is -->" + code);
                 if (code == HttpURLConnection.HTTP_OK) {
                     OnSellContent result = response.body();
                     onMoreLoaded(result);
@@ -150,9 +151,10 @@ public class OnSellPagePresenterImpl implements IOnSellPagePresenter {
     private void onMoreLoaded(OnSellContent result) {
 
         if (mOnSellPageCallback != null) {
-            if (isEmpty(result)) {
+            if (!isEmpty(result)) {
                 mOnSellPageCallback.onMoreLoaded(result);
             }else{
+                mCurrentPage--;
                 mOnSellPageCallback.onMoreLoadedEmpty();
             }
         }

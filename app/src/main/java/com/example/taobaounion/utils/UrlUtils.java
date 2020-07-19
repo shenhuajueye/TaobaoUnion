@@ -29,6 +29,6 @@ public class UrlUtils {
     }
 
     public static String getOnSellPageUrl(int currentPage) {
-        return "OnSell/" + currentPage;
+        return "onSell/" + currentPage;
     }
 }

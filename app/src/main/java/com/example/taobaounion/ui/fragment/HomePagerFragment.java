@@ -20,6 +20,7 @@ import com.example.taobaounion.R;
 import com.example.taobaounion.base.BaseFragment;
 import com.example.taobaounion.model.domain.Categories;
 import com.example.taobaounion.model.domain.HomePagerContent;
+import com.example.taobaounion.model.domain.IBaseInfo;
 import com.example.taobaounion.presenter.ICategoryPagerPresenter;
 import com.example.taobaounion.presenter.ITicketPresenter;
 import com.example.taobaounion.ui.activity.TicketActivity;
@@ -30,6 +31,7 @@ import com.example.taobaounion.utils.Constants;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.PresenterManager;
 import com.example.taobaounion.utils.SizeUtils;
+import com.example.taobaounion.utils.TicketUtil;
 import com.example.taobaounion.utils.ToastUtils;
 import com.example.taobaounion.view.ICategoryPagerCallback;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
@@ -318,30 +320,18 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
     }
 
     @Override
-    public void onItemClick(HomePagerContent.DataBean item) {
+    public void onItemClick(IBaseInfo item) {
         //列表内容被点击了
         LogUtils.d(this, "recycleView item click -->" + item.getTitle());
         handleItemClick(item);
     }
 
-    private void handleItemClick(HomePagerContent.DataBean item) {
-        //处理数据
-        String title = item.getTitle();
-        //领券页面
-        String url = item.getCoupon_click_url();
-        if(TextUtils.isEmpty(url)){
-            //详情页地址
-            url = item.getClick_url();
-        }
-        String cover = item.getPict_url();
-        //拿到TicketPresenter去加载数据
-        ITicketPresenter ticketPresenter = PresenterManager.getInstance().getTicketPresenter();
-        ticketPresenter.getTicket(title, url, cover);
-        startActivity(new Intent(getContext(), TicketActivity.class));
+    private void handleItemClick(IBaseInfo item) {
+        TicketUtil.toTicketPage(getContext(),item);
     }
 
     @Override
-    public void onLooperPagerItemClickListener(HomePagerContent.DataBean item) {
+    public void onLooperPagerItemClickListener(IBaseInfo item) {
         //轮播图内容被点击了
         LogUtils.d(this, "looper item click -->" + item.getTitle());
         handleItemClick(item);

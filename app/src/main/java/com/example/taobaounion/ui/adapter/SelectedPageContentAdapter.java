@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.taobaounion.R;
+import com.example.taobaounion.model.domain.IBaseInfo;
 import com.example.taobaounion.model.domain.SelectedContent;
 import com.example.taobaounion.utils.Constants;
 import com.example.taobaounion.utils.LogUtils;
@@ -111,6 +112,6 @@ public class SelectedPageContentAdapter extends RecyclerView.Adapter<SelectedPag
         this.mContentItemClickListener = listener;
     }
     public interface OnSelectedPageContentItemClickListener{
-        void onContentItemClick(SelectedContent.DataBean.TbkUatmFavoritesItemGetResponseBean.ResultsBean.UatmTbkItemBean item);
+        void onContentItemClick(IBaseInfo item);
     }
 }

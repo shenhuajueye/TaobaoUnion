@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taobaounion.R;
 import com.example.taobaounion.base.BaseFragment;
+import com.example.taobaounion.model.domain.IBaseInfo;
 import com.example.taobaounion.model.domain.SelectedContent;
 import com.example.taobaounion.model.domain.SelectedPageCategory;
 import com.example.taobaounion.presenter.ISelectedPagePresenter;
@@ -26,6 +28,7 @@ import com.example.taobaounion.ui.adapter.SelectedPageLeftAdapter;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.PresenterManager;
 import com.example.taobaounion.utils.SizeUtils;
+import com.example.taobaounion.utils.TicketUtil;
 import com.example.taobaounion.view.ISelectedPageCallback;
 
 import java.util.List;
@@ -39,6 +42,9 @@ public class SelectedFragment extends BaseFragment implements ISelectedPageCallb
 
     @BindView(R.id.right_content_list)
     public RecyclerView rightContentList;
+
+    @BindView(R.id.fragment_bar_title_tv)
+    public TextView barTitleTv;
 
     private ISelectedPagePresenter selectedPagePresenter;
     private SelectedPageLeftAdapter leftAdapter;
@@ -93,6 +99,11 @@ public class SelectedFragment extends BaseFragment implements ISelectedPageCallb
 
             }
         });
+        barTitleTv.setText("精选宝贝");
+    }
+    @Override
+    protected View loadRootView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_with_bar_layout,container,false);
     }
 
     @Override
@@ -145,20 +156,7 @@ public class SelectedFragment extends BaseFragment implements ISelectedPageCallb
 
 
     @Override
-    public void onContentItemClick(SelectedContent.DataBean.TbkUatmFavoritesItemGetResponseBean.ResultsBean.UatmTbkItemBean item) {
-        //内容被点击了
-        //处理数据
-        String title = item.getTitle();
-        //领券页面
-        String url = item.getCoupon_click_url();
-        if(TextUtils.isEmpty(url)){
-            //详情页地址
-            url = item.getClick_url();
-        }
-        String cover = item.getPict_url();
-        //拿到TicketPresenter去加载数据
-        ITicketPresenter ticketPresenter = PresenterManager.getInstance().getTicketPresenter();
-        ticketPresenter.getTicket(title, url, cover);
-        startActivity(new Intent(getContext(), TicketActivity.class));
+    public void onContentItemClick(IBaseInfo item) {
+        TicketUtil.toTicketPage(getContext(),item);
     }
 }
