@@ -1,10 +1,9 @@
 package com.example.taobaounion.presenter.impl;
 
-import com.example.taobaounion.base.IBaseCallback;
 import com.example.taobaounion.model.Api;
 import com.example.taobaounion.model.domain.TicketParams;
 import com.example.taobaounion.model.domain.TicketResult;
-import com.example.taobaounion.presenter.ITicketPagerCallback;
+import com.example.taobaounion.presenter.ITicketPageCallback;
 import com.example.taobaounion.presenter.ITicketPresenter;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.RetrofitManager;
@@ -18,7 +17,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class TicketPresenterImpl implements ITicketPresenter {
-    private ITicketPagerCallback mViewCallback = null;
+    private ITicketPageCallback mViewCallback = null;
     private String mCover = null;
     private TicketResult ticketResult;
 
@@ -87,7 +86,7 @@ public class TicketPresenterImpl implements ITicketPresenter {
     }
 
     @Override
-    public void registerViewCallback(ITicketPagerCallback callBack) {
+    public void registerViewCallback(ITicketPageCallback callBack) {
         this.mViewCallback = callBack;
         if(currentState!=LoadState.NONE){
             //说明状态已经改变
@@ -111,7 +110,7 @@ public class TicketPresenterImpl implements ITicketPresenter {
     }
 
     @Override
-    public void unregisterViewCallback(ITicketPagerCallback callBack) {
+    public void unregisterViewCallback(ITicketPageCallback callBack) {
         mViewCallback = null;
     }
 }

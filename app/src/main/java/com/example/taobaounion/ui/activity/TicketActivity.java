@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.taobaounion.R;
 import com.example.taobaounion.base.BaseActivity;
 import com.example.taobaounion.model.domain.TicketResult;
-import com.example.taobaounion.presenter.ITicketPagerCallback;
+import com.example.taobaounion.presenter.ITicketPageCallback;
 import com.example.taobaounion.presenter.ITicketPresenter;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.PresenterManager;
@@ -27,7 +27,7 @@ import com.example.taobaounion.utils.UrlUtils;
 
 import butterknife.BindView;
 
-public class TicketActivity extends BaseActivity implements ITicketPagerCallback {
+public class TicketActivity extends BaseActivity implements ITicketPageCallback {
 
     private ITicketPresenter ticketPresenter;
     private boolean hasTaobaoApp = false;

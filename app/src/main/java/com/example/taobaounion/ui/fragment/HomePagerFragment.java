@@ -1,10 +1,8 @@
 package com.example.taobaounion.ui.fragment;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
@@ -22,9 +20,7 @@ import com.example.taobaounion.model.domain.Categories;
 import com.example.taobaounion.model.domain.HomePagerContent;
 import com.example.taobaounion.model.domain.IBaseInfo;
 import com.example.taobaounion.presenter.ICategoryPagerPresenter;
-import com.example.taobaounion.presenter.ITicketPresenter;
-import com.example.taobaounion.ui.activity.TicketActivity;
-import com.example.taobaounion.ui.adapter.HomePagerContentAdapter;
+import com.example.taobaounion.ui.adapter.LinearItemContentAdapter;
 import com.example.taobaounion.ui.adapter.LooperPagerAdapter;
 import com.example.taobaounion.ui.custom.AutoLooperViewPager;
 import com.example.taobaounion.utils.Constants;
@@ -42,11 +38,11 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class HomePagerFragment extends BaseFragment implements ICategoryPagerCallback, HomePagerContentAdapter.OnListItemClickListener, LooperPagerAdapter.OnLooperPagerItemClickListener {
+public class HomePagerFragment extends BaseFragment implements ICategoryPagerCallback, LinearItemContentAdapter.OnListItemClickListener, LooperPagerAdapter.OnLooperPagerItemClickListener {
 
     private ICategoryPagerPresenter categoryPagerPresenter;
     private int materialId;
-    private HomePagerContentAdapter contentAdapter;
+    private LinearItemContentAdapter contentAdapter;
     private LooperPagerAdapter looperPagerAdapter;
 
     public static HomePagerFragment newInstance(Categories.DataBean category) {
@@ -185,12 +181,12 @@ public class HomePagerFragment extends BaseFragment implements ICategoryPagerCal
         contentList.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.top = 8;
-                outRect.bottom = 8;
+                outRect.top = SizeUtils.dip2px(getContext(),1.5f);
+                outRect.bottom = SizeUtils.dip2px(getContext(),1.5f);
             }
         });
         //创建适配器
-        contentAdapter = new HomePagerContentAdapter();
+        contentAdapter = new LinearItemContentAdapter();
         //设置适配器
         contentList.setAdapter(contentAdapter);
         //创建轮播图适配器

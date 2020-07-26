@@ -3,6 +3,8 @@ package com.example.taobaounion.model;
 import com.example.taobaounion.model.domain.Categories;
 import com.example.taobaounion.model.domain.HomePagerContent;
 import com.example.taobaounion.model.domain.OnSellContent;
+import com.example.taobaounion.model.domain.SearchRecommend;
+import com.example.taobaounion.model.domain.SearchResult;
 import com.example.taobaounion.model.domain.SelectedContent;
 import com.example.taobaounion.model.domain.SelectedPageCategory;
 import com.example.taobaounion.model.domain.TicketParams;
@@ -33,4 +35,10 @@ public interface Api {
 
     @GET
     Call<OnSellContent> getOnSellPageContent(@Url String url);
+
+    @GET("search/recommend")
+    Call<SearchRecommend> getRecommendWords();
+
+    @GET("search")
+    Call<SearchResult> doSearch(@Query("page") int page,@Query("keyword") String keyword);
 }
