@@ -78,8 +78,12 @@ public class OnSellPagePresenterImpl implements IOnSellPagePresenter {
     }
 
     private boolean isEmpty(OnSellContent content) {
-        int size = content.getData().getTbk_dg_optimus_material_response().getResult_list().getMap_data().size();
-        return size == 0;
+        try{
+            int size = content.getData().getTbk_dg_optimus_material_response().getResult_list().getMap_data().size();
+            return size == 0;
+        }catch (Exception e){
+            return true;
+        }
     }
 
     private void onEmpty() {

@@ -76,9 +76,9 @@ public class TicketActivity extends BaseActivity implements ITicketPageCallback 
             e.printStackTrace();
             hasTaobaoApp = false;
         }
-        LogUtils.d(this,"hasTaobaoApp -->" + hasTaobaoApp);
+        LogUtils.d(this, "hasTaobaoApp -->" + hasTaobaoApp);
         //根据这个值来修改UI
-        copyOrOpenBtn.setText(hasTaobaoApp?"打开淘宝领券":"复制淘口令");
+        copyOrOpenBtn.setText(hasTaobaoApp ? "打开淘宝领券" : "复制淘口令");
     }
 
     @Override
@@ -112,15 +112,15 @@ public class TicketActivity extends BaseActivity implements ITicketPageCallback 
                 ClipData clipData = ClipData.newPlainText("sob_taobao_ticket_code", ticketCode);
                 clipboardManager.setPrimaryClip(clipData);
                 //判断有没有淘宝
-                if(hasTaobaoApp){
+                if (hasTaobaoApp) {
                     //如果有就打开淘宝
                     Intent taobaoIntent = new Intent();
 //                    taobaoIntent.setAction("android.intent.action.MAIN");
 //                    taobaoIntent.addCategory("android.intent.category.LAUNCHER");
-                    ComponentName componentName = new ComponentName("com.taobao.taobao","com.taobao.tao.TBMainActivity");
+                    ComponentName componentName = new ComponentName("com.taobao.taobao", "com.taobao.tao.TBMainActivity");
                     taobaoIntent.setComponent(componentName);
                     startActivity(taobaoIntent);
-                }else{
+                } else {
                     //没有就提示复制成功
                     ToastUtils.showToast("已经复制,粘贴分享或打开淘宝");
                 }
@@ -131,10 +131,17 @@ public class TicketActivity extends BaseActivity implements ITicketPageCallback 
 
     @Override
     public void onTicketLoader(String cover, TicketResult result) {
+        //设置图片封面
         if (mCover != null && !TextUtils.isEmpty(cover)) {
             String coverPath = UrlUtils.getCoverPath(cover);
             Glide.with(this).load(coverPath).into(mCover);
         }
+
+        if(TextUtils.isEmpty(cover)){
+            mCover.setImageResource(R.mipmap.no_image);
+        }
+
+        //设置一下code
         if (result != null && result.getData().getTbk_tpwd_create_response() != null) {
             ticketCode.setText(result.getData().getTbk_tpwd_create_response().getData().getModel());
         }

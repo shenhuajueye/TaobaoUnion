@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.example.taobaounion.R;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class TextFlowLayout extends ViewGroup {
@@ -22,6 +24,10 @@ public class TextFlowLayout extends ViewGroup {
     private int selfWidth;
     private int itemHeight;
     private OnFlowTextItemClickListener mItemClickListener = null;
+
+    public int getContentSize(){
+        return mTextList.size();
+    }
 
     public float getItemHorizontalSpace() {
         return itemHorizontalSpace;
@@ -59,7 +65,10 @@ public class TextFlowLayout extends ViewGroup {
     }
 
     public void setTextList(List<String> textList) {
-        this.mTextList = textList;
+        removeAllViews();
+        this.mTextList.clear();
+        this.mTextList.addAll(textList);
+        Collections.reverse(mTextList);
         //遍历内容
         for (String text : mTextList) {
             //添加子view

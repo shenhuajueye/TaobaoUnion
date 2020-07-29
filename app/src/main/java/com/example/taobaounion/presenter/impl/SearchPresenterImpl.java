@@ -65,7 +65,6 @@ public class SearchPresenterImpl implements ISearchPagePresenter {
      * @param history
      */
     private void saveHistories(String history) {
-        this.delHistories();
         Histories histories = jsonCacheUtil.getValueByKey(KEY_HISTORIES, Histories.class);
         //如果说已经有了，就干掉，然后再添加
         List<String> historiesList = null;
@@ -86,8 +85,8 @@ public class SearchPresenterImpl implements ISearchPagePresenter {
         }
 
         //对个数进行限制
-        if (historiesList.size() > DEFAULT_HISTORIES) {
-            historiesList = historiesList.subList(0, DEFAULT_HISTORIES);
+        if (historiesList.size() > historiesMaxSize) {
+            historiesList = historiesList.subList(0, historiesMaxSize);
         }
         //添加记录
         historiesList.add(history);

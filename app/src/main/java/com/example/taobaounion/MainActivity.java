@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.taobaounion.base.BaseActivity;
 import com.example.taobaounion.base.BaseFragment;
+import com.example.taobaounion.ui.activity.IMainActivity;
 import com.example.taobaounion.ui.fragment.HomeFragment;
 import com.example.taobaounion.ui.fragment.OnSellFragment;
 import com.example.taobaounion.ui.fragment.SearchFragment;
@@ -18,18 +19,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import butterknife.BindView;
 import butterknife.Unbinder;
 
-public class MainActivity extends BaseActivity {
-
-    private static final String TAG = "MainActivity";
+public class MainActivity extends BaseActivity implements IMainActivity {
     @BindView(R.id.main_navigation_bar)
     public BottomNavigationView bottomNavigationView;
+
     private HomeFragment homeFragment;
     private SelectedFragment selectedFragment;
     private OnSellFragment redPacketFragment;
-    private SearchFragment searchFragment1;
     private SearchFragment searchFragment;
     private FragmentManager supportFragmentManager;
-    private Unbinder bind;
 
 
     @Override
@@ -47,20 +45,21 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    /**
+     * 跳转到搜索界面
+     */
+    public void switch2Search() {
+        //switchFragment(searchFragment);
+        //切换导航栏的选中项
+        bottomNavigationView.setSelectedItemId(R.id.search);
+
+    }
+
     @Override
     protected void initEvent() {
         initListener();
     }
 
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (bind != null) {
-            bind.unbind();
-        }
-    }
 
     private void initFragment() {
         homeFragment = new HomeFragment();
@@ -100,6 +99,11 @@ public class MainActivity extends BaseActivity {
     private BaseFragment lastOneFragment = null;
 
     private void switchFragment(BaseFragment targetFragment) {
+        //如果上一个fragment跟当前要切换的fragment是同一个，那么不需要切换
+        if(lastOneFragment == targetFragment){
+            return;
+        }
+
         //修改成add和hide的方式来控制Fragment的切换
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         if (!targetFragment.isAdded()) {
@@ -108,18 +112,10 @@ public class MainActivity extends BaseActivity {
             fragmentTransaction.show(targetFragment);
         }
         if (lastOneFragment != null) {
-            LogUtils.d(this,"已隐藏" + lastOneFragment);
+            LogUtils.d(this, "已隐藏" + lastOneFragment);
             fragmentTransaction.hide(lastOneFragment);
         }
         lastOneFragment = targetFragment;
         fragmentTransaction.commit();
     }
-
-//    private void initView() {
-//        HomeFragment homeFragment = new HomeFragment();
-//        FragmentManager supportFragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-////        fragmentTransaction.add(R.id.main_page_container, homeFragment);
-////        fragmentTransaction.commit();
-//    }
 }

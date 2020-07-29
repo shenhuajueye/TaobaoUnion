@@ -20,6 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--        <activity android:name="com.vondear.rxfeature.activity.ActivityScanerCode"/>-->
+        <activity android:name=".ui.activity.ScanQrCodeActivity"/>
     </application>
 
 </manifest>

@@ -50,7 +50,6 @@ public class TicketPresenterImpl implements ITicketPresenter {
                     ticketResult = response.body();
                     LogUtils.d(TicketPresenterImpl.this,"result -->" + ticketResult);
                     //通知UI更新
-
                     onTicketLoaderSuccess();
                 }else{
                     //

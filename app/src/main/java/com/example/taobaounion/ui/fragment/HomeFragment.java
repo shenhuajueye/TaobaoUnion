@@ -1,29 +1,41 @@
 package com.example.taobaounion.ui.fragment;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.taobaounion.R;
 import com.example.taobaounion.base.BaseFragment;
 import com.example.taobaounion.model.domain.Categories;
 import com.example.taobaounion.presenter.IHomePresenter;
-import com.example.taobaounion.presenter.impl.HomePresenterImpl;
+import com.example.taobaounion.ui.activity.IMainActivity;
+import com.example.taobaounion.ui.activity.ScanQrCodeActivity;
 import com.example.taobaounion.ui.adapter.HomePagerAdapter;
 import com.example.taobaounion.utils.LogUtils;
 import com.example.taobaounion.utils.PresenterManager;
 import com.example.taobaounion.view.IHomeCallBack;
 import com.google.android.material.tabs.TabLayout;
+import com.vondear.rxfeature.activity.ActivityScanerCode;
 
 import butterknife.BindView;
 
 public class HomeFragment extends BaseFragment implements IHomeCallBack {
     @BindView(R.id.home_indicator)
     public TabLayout tabLayout;
+
     @BindView(R.id.home_pager)
     public ViewPager homePager;
+
+    @BindView(R.id.home_search_input_box)
+    public View mSearchInputBox;
+
+    @BindView(R.id.scan_icon)
+    public View scanBtn;
+
     private IHomePresenter homePresenter;
     private HomePagerAdapter homePagerAdapter;
 
@@ -42,15 +54,36 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
     }
 
     @Override
+    protected void initListener() {
+        scanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到扫描界面
+                startActivity(new Intent(getContext(), ScanQrCodeActivity.class));
+            }
+        });
+    }
+
+    @Override
     protected void initPresenter() {
         //创建Presenter
         homePresenter = PresenterManager.getInstance().getHomePresenter();
         homePresenter.registerViewCallback(this);
+        mSearchInputBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到搜索界面
+                FragmentActivity activity = getActivity();
+                if (activity instanceof IMainActivity) {
+                    ((IMainActivity) activity).switch2Search();
+                }
+            }
+        });
     }
 
     @Override
     protected View loadRootView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.base_home_fragment_layout,container,false);
+        return inflater.inflate(R.layout.base_home_fragment_layout, container, false);
     }
 
     @Override
