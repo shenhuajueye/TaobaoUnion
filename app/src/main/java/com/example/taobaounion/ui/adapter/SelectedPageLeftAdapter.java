@@ -1,5 +1,6 @@
 package com.example.taobaounion.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -30,14 +31,17 @@ public class SelectedPageLeftAdapter extends RecyclerView.Adapter<SelectedPageLe
     }
 
 
+    @SuppressLint("ResourceAsColor")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         TextView itemTv = holder.itemView.findViewById(R.id.left_category_tv);
         if (mCurrentSelectedPosition == position) {
-            itemTv.setBackgroundColor(itemTv.getResources().getColor(R.color.colorEEEEEE,null));
+            itemTv.setBackgroundColor(itemTv.getResources().getColor(R.color.colorEEEEEE));
+            //itemTv.setBackgroundColor(itemTv.getResources().getColor(R.color.colorEEEEEE,null));
         } else {
-            itemTv.setBackgroundColor(itemTv.getResources().getColor(R.color.white,null));
+            itemTv.setBackgroundColor(itemTv.getResources().getColor(R.color.white));
+            //itemTv.setBackgroundColor(itemTv.getResources().getColor(R.color.white,null));
         }
         SelectedPageCategory.DataBean dataBean = mData.get(position);
         itemTv.setText(dataBean.getFavorites_title());
